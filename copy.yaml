@@ -1,0 +1,14 @@
+- name: Copy playbook
+  hosts: all
+  become: true
+
+
+  tasks:
+    - name: Ping
+      ping:
+
+    - name: Copy File
+      copy:
+        src: ./file111.txt
+        dest: /home/mike/
+        mode: 0777

@@ -1,0 +1,11 @@
+---
+# tasks file for remove_packages
+- name: Remove packages
+  apt:
+    pkg: "{{item}}"
+    state: absent
+  with_items:
+    - "{{docker_dep}}"
+    - "{{docker_packages}}"
+    - "{{k8s_dependencies}}"
+    - "{{k8s_packages}}"

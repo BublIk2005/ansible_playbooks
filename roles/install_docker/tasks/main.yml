@@ -1,0 +1,47 @@
+---
+# tasks file for install_docker
+- name: Installing Docker dependencies
+  apt:
+    pkg: "{{ docker_dep }}"
+    state: present
+    update_cache: yes
+
+- name: Adding Docker GPG key
+  get_url:
+    url: "{{docker_gpg_key}}"
+    dest: /etc/apt/keyrings/docker.asc
+
+- name: Adding Docker apt repository
+  apt_repository:
+    repo: "{{docker_apt_repo}}"
+    state: present
+
+- name: Installing Docker
+  apt:
+    name: 
+      - docker-ce
+      - docker-ce-cli
+      - docker-compose-plugin
+    state: latest
+    update_cache: yes
+
+- name: Enabling and starting Docker service
+  service: 
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Allowing '{{ansible_user}}' user to access Docker socket
+  user:
+    name: "{{ansible_user}}"
+    groups: docker
+    append: yes
+
+- name: Copy file daemon.json
+  copy:
+    src: daemon.json
+    dest: /etc/docker
+    group: docker
+    mode: 0664
+
+

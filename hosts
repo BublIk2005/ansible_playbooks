@@ -1,0 +1,27 @@
+
+[test]
+client01 inv_user=client1
+
+[group2]
+client02 ansible_host=192.168.64.20 inv_user=client2
+
+[group3]
+client03 ansible_host=192.168.64.30 inv_user=client3
+
+[group34]
+client03 
+client04 ansible_host=192.168.64.40 inv_user=client4
+
+[all_groups:children]
+group2
+group34
+
+[kube_master]
+client01
+
+[kube_workers]
+client02
+client03
+
+[jenkins]
+client04

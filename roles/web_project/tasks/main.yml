@@ -1,0 +1,54 @@
+---
+# tasks file for web_project
+
+- name: Apache Installation
+  apt:
+    name: apache2
+    state: present
+
+- name: Apache Module Installation
+  apt:
+    name:
+      - apache2-bin
+      - apache2-data
+      - apache2-utils
+      - libfcgi-perl
+
+- name: Enable Apache-Module
+  apache2_module:
+    state: present
+    name: "{{item}}"
+  with_items: ["proxy_fcgi", "proxy", "rewrite", "actions", "alias", "ssl", "setenvif", "headers"]
+  notify: Restart apache2
+
+### web-project
+
+- name: Create Project Folder
+  file:
+    path: /var/www/{{project_name}}
+    state: directory
+    recurse: yes
+    owner: www-data
+    group: www-data
+    mode: 0755
+
+- name: Create VHost
+  template:
+    src: vhost.j2
+    dest: "/etc/apache2/sites-available/{{project_name}}.conf"
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart apache2
+
+- name: Add vhost symlink in site-enabled
+  file:
+    src: "/etc/apache2/sites-available/{{project_name}}.conf"
+    dest: "/etc/apache2/sites-enabled/{{project_name}}.conf"
+    state: link
+  notify: Restart apache2
+
+- name: Delete Default Vhost
+  file:
+    path: /etc/apache2/sites-enabled/000-default.conf
+    state: absent

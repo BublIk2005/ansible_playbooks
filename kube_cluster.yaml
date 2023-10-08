@@ -1,0 +1,19 @@
+- name: Install docker
+  hosts: [kube_workers]
+  become: true
+  roles:
+    - install_docker
+    - k8s_install
+
+
+# - name: Create cluster 
+#   hosts: kube_master
+#   become: yes
+#   roles:
+#     - k8s_create_cluster
+
+# - name: join cluster
+#   hosts: kube_workers
+#   become: yes
+#   roles:
+#     - k8s_join_cluster

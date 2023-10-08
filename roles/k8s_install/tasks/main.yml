@@ -1,0 +1,72 @@
+---
+# tasks file for k8s_install
+- name: Install k8s dependencies
+  apt:
+    name: "{{k8s_dependencies}}"
+    state: present
+    update_cache: yes
+
+- name: Add gpg key
+  apt_key:
+    url: "{{k8s_gpg_key}}"
+    state: present
+    keyring: /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+
+- name: Add repository
+  apt_repository:
+    repo: "{{k8s_apt_repo}}"
+    state: present
+
+- name: Remove swapfile from /etc/fstab
+  mount:
+    name: "{{item}}"
+    fstype: swap
+    state: absent
+  with_items:
+    - swap
+    - none
+
+- name: install k8s
+  apt:
+    name:
+      - kubectl
+      - kubeadm
+      - kubelet
+
+- name: Add cgroups driver and set IP in kubeadm
+  lineinfile:
+    path: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+    regexp: '^ExecStart=..*'
+    line: "{{kubeadm_conf_exec_start_line}}"
+
+- name: Restart kubelet
+  service:
+    name: kubelet
+    state: restarted
+
+- name: Enable CRI plugin in containerd
+  lineinfile:
+    path: /etc/containerd/config.toml
+    regexp: '^disabled_plugins'
+    line: enable_plugins=["cri"]
+    state: present
+
+- name: restart containerd
+  service:
+    name: containerd
+    state: restarted
+
+# - name: Set IP in kubeadm
+#   lineinfile:
+#     dest: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+#     line: --node-ip="{{ansible_host}}"
+#     state: present
+#     insertafter: EOF
+#     create: True
+
+
+# - name: Swapoff
+#   command: sudo swapoff -a
+
+
+  

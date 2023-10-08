@@ -1,0 +1,29 @@
+- name: Messages
+  hosts: test
+  become: true
+
+  vars:
+    slovo1: DOM
+    slovo2: in
+    mesto: RUS
+
+  tasks:
+    - name: Print vars
+      debug:
+        var: slovo1
+
+    - debug:
+        msg: "Moi dom v {{mesto}}"
+
+    - debug:
+        var: ansible_distribution_version
+
+    - debug:
+        msg: "Linux: {{ansible_distribution}} Version: {{ansible_distribution_version}}"
+
+
+    - shell: id client1
+      register: client_groups
+
+    - debug:
+        msg: "Client1 in groups: {{client_groups}}"

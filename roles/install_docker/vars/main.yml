@@ -1,0 +1,11 @@
+---
+# vars file for install_docker
+docker_dep:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - software-properties-common
+  - gnupg
+
+docker_gpg_key: "https://download.docker.com/linux/ubuntu/gpg"
+docker_apt_repo: "deb [arch=arm64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu jammy stable"

@@ -1,0 +1,51 @@
+---
+# tasks file for k8s_create_cluster
+- name: Initialize the Kubernetes cluster using kubeadm
+  command: "kubeadm init --apiserver-advertise-address={{ansible_host}} --pod-network-cidr=10.10.0.0/16"
+
+
+- name: Create home_dir
+  shell: "{{item}}"
+  become_user: mike
+  with_items:
+    - "mkdir -p $HOME/.kube"
+#    - "sudo cp -i /etc/kubernetes/admin.conf /home/mike/.kube/config"
+
+- name: Copy
+  copy:
+    remote_src: true
+    src: /etc/kubernetes/admin.conf
+    dest: "/home/{{ ansible_user }}/.kube/config"
+    mode: 0666
+
+# - name: Copy config
+#   shell: "{{item}}"
+#   become_user: "{{ansible_user}}"
+#   with_items:
+#     - sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+
+- name: Get permission
+  shell: "{{item}}"
+  with_items:
+    - sudo chown $(id -u {{ ansible_user }}):$(id -g {{ ansible_user }}) /home/{{ ansible_user }}/.kube/config
+  
+
+# - name: Install Calico pod network
+#   shell: "{{item}}"
+#   with_items:
+#     - curl https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/calico.yaml -O
+#     - kubectl apply -f calico.yaml
+
+- name: Generate join command
+  become_user: "{{ansible_user}}"
+  shell: "kubeadm token create --print-join-command > $HOME/.kube/join-command"
+
+
+
+# - name: Copy join command to local file
+#   local_action: copy content="{{ join_command.stdout_lines[0]}}" dest="/Users/mikhail/projects/playbooks/roles/k8s_create_cluster/files/join-command"
+- name: Copy join command
+  fetch:
+    src: /home/{{ ansible_user }}/.kube/join-command
+    dest: /Users/mikhail/projects/playbooks/roles/k8s_create_cluster/files/
+    flat: yes

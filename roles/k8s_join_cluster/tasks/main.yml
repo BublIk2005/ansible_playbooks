@@ -1,0 +1,10 @@
+---
+# tasks file for k8s_join_cluster
+- name: Copy join command
+  copy: 
+    src: join-command 
+    dest: /home/{{ ansible_user }}/join-command.sh
+    mode: 0777
+
+- name: Join the node to cluster
+  command: sh /home/{{ ansible_user }}/join-command.sh

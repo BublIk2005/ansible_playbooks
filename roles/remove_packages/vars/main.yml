@@ -1,0 +1,18 @@
+---
+# vars file for remove_packages
+docker_dep:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - software-properties-common
+  - gnupg
+docker_packages:
+  - docker-*
+k8s_dependencies:
+  - ca-certificates
+  - curl
+  - apt-transport-https
+  - keepalived
+  - haproxy
+k8s_packages:
+  - kube*

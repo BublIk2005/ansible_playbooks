@@ -1,0 +1,33 @@
+- name: Test Blocks
+  hosts: all
+  become: true
+
+
+  vars:
+
+  tasks:
+
+    - block:
+
+      - name: Install packages
+        apt:
+          pkg:
+            - tree
+            - nmon
+            - htop
+          state: present
+
+      - name: Create Folder
+        file:
+          path: /srv/folder1
+          state: directory
+      when: ansible_hostname == "server1"
+
+    - name: Copy File 
+      copy:
+        src: file123
+        dest: /srv/
+
+      when: ansible_hostname == "server3"
+
+
