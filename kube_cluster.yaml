@@ -1,9 +1,9 @@
 - name: Install docker
-  hosts: [kube_workers]
+  hosts: [jenkins]
   become: true
   roles:
     - install_docker
-    - k8s_install
+#    - k8s_install
 
 
 # - name: Create cluster 
