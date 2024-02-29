@@ -1,0 +1,5 @@
+- name: Install postgres
+  hosts: [yandex_postgres]
+  become: true
+  roles:
+    - install_postgres

@@ -1,0 +1,36 @@
+---
+# tasks file for ./roles/install_postgres
+# - name: Copy postgres image
+#   community.docker.docker_image_export:
+#     name: postgres:16.1
+#     path: /tmp/postgres.tar
+
+- name: Copy postgres image
+  copy:
+    src: postgres16.1-alpine3.19.tar
+    dest: /tmp/postgres16.1-alpine3.19.tar
+
+- name: Create postgres home dir
+  file:
+    path: /home/{{ ansible_user }}/postgres
+    state: directory
+
+- name: Copy postgres.conf
+  copy:
+    src: postgesql.conf
+    dest: /home/{{ ansible_user }}/postgres/postgresql.conf
+
+- name: Copy compose file
+  copy:
+    src: compose.yaml
+    dest: /home/{{ ansible_user }}/postgres/compose.yaml
+
+- name: Load postgres image
+  community.docker.docker_image_load:
+    path: /tmp/postgres16.1-alpine3.19.tar
+  register: result
+
+- name: Run docker compose
+  community.docker.docker_compose_v2:
+    project_src: /home/{{ ansible_user }}/postgres
+  register: output

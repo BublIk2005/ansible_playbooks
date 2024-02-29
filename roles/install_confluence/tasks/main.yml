@@ -1,0 +1,27 @@
+---
+# tasks file for roles/install_confluence
+- name: Copy confluence image
+  copy:
+    src: confluence-server.tar
+    dest: /tmp/confluence-server.tar
+    #dest: /tmp/atlassian-hank.tar
+
+- name: Create atlassian confluence home dir
+  file:
+    path: /home/{{ ansible_user }}/atlassian/confluence/
+    state: directory
+
+- name: Copy compose file
+  copy:
+    src: compose.yaml
+    dest: /home/{{ ansible_user }}/atlassian/confluence/compose.yaml
+
+- name: Load confluence image
+  community.docker.docker_image_load:
+    path: /tmp/confluence-server.tar
+  register: result
+
+- name: Run docker compose
+  community.docker.docker_compose_v2:
+    project_src: /home/{{ ansible_user }}/atlassian/confluence/
+  register: output

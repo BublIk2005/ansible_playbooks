@@ -36,6 +36,9 @@
     name: "{{ansible_user}}"
     groups: docker
     append: yes
+  with_items:
+    - "{{ansible_user}}"
+    - jenkins
 
 - name: Copy file daemon.json
   copy:

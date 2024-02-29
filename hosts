@@ -1,4 +1,7 @@
 
+[yandex_postgres]
+postgres ansible_host=158.160.151.166 ansible_user=mike
+
 [test]
 client01 inv_user=client1
 

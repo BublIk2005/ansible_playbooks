@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  confluence:
+    image: mg/confluence-server:latest
+    restart: always
+    volumes:
+      - confluence-data:/var/atlassian/confluence
+    ports:
+      - "8090:8090"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+volumes:
+  confluence-data:

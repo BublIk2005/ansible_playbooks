@@ -8,4 +8,4 @@ docker_dep:
   - gnupg
 
 docker_gpg_key: "https://download.docker.com/linux/ubuntu/gpg"
-docker_apt_repo: "deb [arch=arm64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu jammy stable"
+docker_apt_repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu jammy stable"
